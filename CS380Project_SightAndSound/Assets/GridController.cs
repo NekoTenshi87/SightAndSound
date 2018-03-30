@@ -43,4 +43,45 @@ public class GridController : MonoBehaviour
 
 
     }
+
+    public bool ScreenWithinGrid(Vector3 trans)
+    {
+        if (trans.y < 0.0f || trans.y > Screen.height)
+        {
+            return false;
+        }
+
+        float offset = (Screen.width - Screen.height) / 2.0f;
+
+        if (trans.x < offset || trans.x > Screen.width - offset)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public Vector3 ScreenToWorld(Vector3 trans)
+    {
+        trans.x -= (Screen.width - Screen.height) / 2.0f;
+        trans.x /= Screen.height;
+        trans.y /= Screen.height;
+
+        return trans;
+    }
+
+    public Vector3 ClampWorldToGridSq(Vector3 trans)
+    {
+
+
+        return new Vector3();
+    }
+
+    public Vector3Int WorldToGrid(Vector3 trans)
+    {
+
+
+
+        return new Vector3Int(Mathf.FloorToInt(trans.x), Mathf.FloorToInt(trans.y), Mathf.FloorToInt(trans.z));
+    }
 }

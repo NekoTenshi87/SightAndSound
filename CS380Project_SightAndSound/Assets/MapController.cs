@@ -21,8 +21,8 @@ public class MapController : MonoBehaviour
 
     int MaxNumberOfMaps = 0;
 
-    int[] map_width;
-    int[][][] map_data;
+    int[] map_width = null;
+    int[][][] map_data = null;
 
     // Use this for initialization
     void Start()
@@ -49,19 +49,26 @@ public class MapController : MonoBehaviour
     [ExecuteInEditMode]
     private void OnValidate()
     {
-        LoadMap(CurrentMap);
+        ReloadMaps();
     }
 
     [ExecuteInEditMode]
     void ClearMap()
     {
-        gameObject.GetComponent<Tilemap>().ClearAllTiles();
+        Tilemap map = gameObject.GetComponent<Tilemap>();
+        if (map)
+        {
+          gameObject.GetComponent<Tilemap>().ClearAllTiles();
+        }
     }
 
     [ExecuteInEditMode]
     public void ReloadMaps()
     {
-        LoadAllMapsFromFile();
+        if (map_width == null || map_data == null)
+        {
+          LoadAllMapsFromFile();
+        }
         LoadMap(CurrentMap);
     }
 
@@ -138,7 +145,7 @@ public class MapController : MonoBehaviour
     {
         ClearMap();
 
-        int map_index = Math.Max(0, Math.Min(MaxNumberOfMaps, index));
+        int map_index = Math.Max(0, Math.Min(MaxNumberOfMaps - 1, index));
 
         CurrentMap = map_index;
 

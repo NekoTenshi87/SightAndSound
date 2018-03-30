@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     Vector3 prev_pos;
 
     float speed;
+    Vector3Int goal;
 
     // Use this for initialization
     void Start()
@@ -82,6 +83,20 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
-        MovePlayer();
+        if (Input.GetButtonDown("Fire1"))
+        {
+            GridController grid = GameObject.Find("Grid").GetComponentInParent<GridController>();
+            Vector3 mouse_pos = Input.mousePosition;
+
+            if (grid.ScreenWithinGrid(mouse_pos))
+            {
+                //goal = grid.WorldToGrid(mouse_pos);
+                transform.position = grid.ScreenToWorld(mouse_pos);
+            }
+        }
+        else
+        {
+          MovePlayer();
+        }
 	}
 }
