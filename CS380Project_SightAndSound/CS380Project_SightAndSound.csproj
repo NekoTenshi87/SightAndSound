@@ -282,9 +282,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\AStarController.cs" />
     <Compile Include="Assets\GridController.cs" />
     <Compile Include="Assets\MapController.cs" />
     <Compile Include="Assets\MapControllerEditor.cs" />
+    <Compile Include="Assets\MovementController.cs" />
     <Compile Include="Assets\PlayerController.cs" />
   </ItemGroup>
   <ItemGroup>
