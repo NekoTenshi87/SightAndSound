@@ -592,8 +592,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentMap: 0
-  WallTile: {fileID: 0}
-  InvisWallTile: {fileID: 0}
+  WallTile: {fileID: 11400000, guid: 529dc2c89ee43ea4fbaf07811895c3ba, type: 2}
+  InvisWallTile: {fileID: 11400000, guid: 67700fcb66fc0b244b80f44dafae5af9, type: 2}
 --- !u!1001 &1428001155
 Prefab:
   m_ObjectHideFlags: 0
@@ -698,6 +698,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4206179724661390, guid: cdf16c74b8c01f44398668601dc7e4e6, type: 2}
       propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3664157344315145044, guid: cdf16c74b8c01f44398668601dc7e4e6,
+        type: 2}
+      propertyPath: m_MaskInteraction
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
