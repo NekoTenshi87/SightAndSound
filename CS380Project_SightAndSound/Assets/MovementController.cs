@@ -73,6 +73,16 @@ public class MovementController : MonoBehaviour
         return waypoints.First.Value;
     }
 
+    public void PushWaypointLast(Vector3 pos)
+    {
+        waypoints.AddLast(pos);
+    }
+
+    public void PushWaypointFirst(Vector3 pos)
+    {
+        waypoints.AddFirst(pos);
+    }
+
     public void RemoveFirstWaypoint()
     {
         if (waypoints.Count > 0)

@@ -124,13 +124,15 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+            MovementController move = gameObject.GetComponent<MovementController>();
             GridController grid = GameObject.Find("Grid").GetComponentInParent<GridController>();
             Vector3 mouse_pos = Input.mousePosition;
 
             if (grid.ScreenWithinGrid(mouse_pos))
             {
                 //goal = grid.WorldToGrid(mouse_pos);
-                transform.position = grid.ScreenToWorld(mouse_pos);
+                //transform.position = grid.ScreenToWorld(mouse_pos);
+                move.PushWaypointLast(grid.ScreenToWorld(mouse_pos));
             }
         }
         else
