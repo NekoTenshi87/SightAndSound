@@ -145,11 +145,20 @@ public class MovementController : MonoBehaviour
 
             if (grid.IsClearPath(start_grid, goal_grid, gameObject.transform.lossyScale.x / 2.0f))
             {
-                waypoints.AddLast(goal_pos);
-
                 Vector2Int diff = goal_grid - start_grid;
 
-                A_Star.SetPathDistance(Mathf.Sqrt((float)(diff.x * diff.x + diff.y * diff.y)));
+                float dist = Mathf.Sqrt((float)(diff.x * diff.x + diff.y * diff.y));
+
+                if (dist > max_dist)
+                {
+                    waypoints.AddLast(gameObject.transform.position);
+                    A_Star.SetPathDistance(0.0f);
+                }
+                else
+                {
+                    waypoints.AddLast(goal_pos);
+                    A_Star.SetPathDistance(dist);
+                }
 
                 return true;
             }

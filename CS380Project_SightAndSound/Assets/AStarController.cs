@@ -171,7 +171,7 @@ public class AStarController : MonoBehaviour
 
     public void Pop(Vector2Int pos)
     {
-        if (!searchSpace[pos.y][pos.x].closed)
+        if (searchSpace[pos.y][pos.x].open)
         {
             --OpenListSize;
         }
@@ -226,7 +226,7 @@ public class AStarController : MonoBehaviour
             return false;
         }
 
-        pushNeighborNodes(index);
+        pushNeighborNodes(index, max_dist);
 
         return true;
     }
@@ -276,7 +276,7 @@ public class AStarController : MonoBehaviour
         return minIndex;
     }
 
-    void pushNeighborNodes(Vector2Int parent)
+    void pushNeighborNodes(Vector2Int parent, float max_dist)
     {
         GridController grid = GameObject.Find("Grid").GetComponent<GridController>();
         MapController map = grid.GetComponentInChildren<MapController>();
@@ -438,6 +438,11 @@ public class AStarController : MonoBehaviour
                 else
                 {
                     child.given = searchSpace[parent.y][parent.x].given + 1.0f;
+                }
+
+                if (child.given > max_dist)
+                {
+                    continue;
                 }
 
                 child.cost = child.given + CalcHeuristic(pos, goal);
