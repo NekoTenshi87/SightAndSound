@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AStarController : MonoBehaviour
 {
-    public float HeuristicWeight = 1.1f;
+    public float HeuristicWeight = 1.01f;
 
     int map_size = 40;
 
