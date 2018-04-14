@@ -180,4 +180,9 @@ public class MapController : MonoBehaviour
 
         grid.Resize(width);
     }
+
+    public bool IsWall(int row, int col)
+    {
+        return map_data[CurrentMap][row][col] == (int)TILE.TILE_WALL;
+    }
 }

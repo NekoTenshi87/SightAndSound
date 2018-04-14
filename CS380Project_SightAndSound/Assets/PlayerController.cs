@@ -132,7 +132,10 @@ public class PlayerController : MonoBehaviour
             {
                 //goal = grid.WorldToGrid(mouse_pos);
                 //transform.position = grid.ScreenToWorld(mouse_pos);
-                move.PushWaypointLast(grid.ScreenToWorld(mouse_pos));
+                //move.PushWaypointLast(grid.ScreenToWorld(mouse_pos));
+
+                // Call Compute Path
+                move.ComputePath(grid.ScreenToWorld(mouse_pos), float.MaxValue, true);
             }
         }
         else

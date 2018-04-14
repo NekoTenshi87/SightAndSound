@@ -8,13 +8,10 @@ public class MovementController : MonoBehaviour
     public float JogSpeed = 4.0f;
 
     float speed;
-    Vector3 goal;
 
     Vector3 direction = new Vector3(0.0f, 1.0f, 0.0f);
 
     LinkedList<Vector3> waypoints = new LinkedList<Vector3>();
-
-    float distance_sq = 0.0f;
 
     // Use this for initialization
     void Start()
@@ -119,22 +116,12 @@ public class MovementController : MonoBehaviour
         }
     }
 
-    public float GetPathDistance()
-    {
-        return Mathf.Sqrt(distance_sq);
-    }
-
-    public float GetPathDistanceSq()
-    {
-        return distance_sq;
-    }
-
     public float GetPosDist(Vector3 a, Vector3 b)
     {
         return Mathf.Sqrt((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y));
     }
 
-    public bool ComputePath(Vector2Int grid_pos, bool newRequest)
+    public bool ComputePath(Vector3 goal_pos, float max_dist, bool newRequest)
     {
         AStarController A_Star = gameObject.GetComponent<AStarController>();
         GridController grid = GameObject.Find("Grid").GetComponent<GridController>();
@@ -143,31 +130,56 @@ public class MovementController : MonoBehaviour
         {
             A_Star.ValidateSearchSpaceSize();
 
-            goal = grid.GetCoordinates(grid_pos);
+            Vector2Int goal_grid = grid.GetRowColumn(goal_pos);
 
-            Vector3 pos = gameObject.transform.position;
-
-            Vector2Int start = grid.GetRowColumn(pos);
+            Vector2Int start_grid = grid.GetRowColumn(gameObject.transform.position);
 
             waypoints.Clear();
 
-            if (grid_pos.x == start.x && grid_pos.y == start.y)
+            if (goal_grid.x == start_grid.x && goal_grid.y == start_grid.y)
             {
-                distance_sq = 0.0f;
+                waypoints.AddLast(grid.GetCoordinates(goal_grid.y, goal_grid.x));
+                A_Star.SetPathDistance(0.0f);
+                return true;
+            }
+
+            if (grid.IsClearPath(start_grid, goal_grid, gameObject.transform.lossyScale.x / 2.0f))
+            {
+                waypoints.AddLast(goal_pos);
+
+                Vector2Int diff = goal_grid - start_grid;
+
+                A_Star.SetPathDistance(Mathf.Sqrt((float)(diff.x * diff.x + diff.y * diff.y)));
+
                 return true;
             }
 
 
+            // Clear List
+            A_Star.Clear();
+
+            //Set Variables
+            A_Star.SetStart(start_grid);
+            A_Star.SetGoal(goal_grid);
+
+            AStarController.NodeData node = new AStarController.NodeData();
+
+            node.cost = A_Star.CalcHeuristic(start_grid, goal_grid);
+
+            A_Star.Push(start_grid, node);
         }
 
+        while (!A_Star.Empty())
+        {
+            if (!A_Star.Update(max_dist))
+            {
+                return true;
+            }
+        }
 
-
-
-
-
-
-
-
+        Vector2Int pos = grid.GetRowColumn(gameObject.transform.position);
+        waypoints.AddLast(grid.GetCoordinates(pos.y, pos.x));
+        A_Star.SetPathDistance(0.0f);
 
         return true;
     }
