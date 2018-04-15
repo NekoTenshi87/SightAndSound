@@ -42,6 +42,8 @@ public class MapController : MonoBehaviour
                 CurrentMap = 0;
             }
 
+            MovementController move = GameObject.Find("Player").GetComponent<MovementController>();
+            move.ClearWaypoints();
             LoadMap(CurrentMap);
         }
     }
