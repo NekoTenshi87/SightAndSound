@@ -9,7 +9,7 @@ public class MovementController : MonoBehaviour
 
     float speed;
 
-    Vector3 direction = new Vector3(0.0f, 1.0f, 0.0f);
+    public Vector3 direction = new Vector3(0.0f, 1.0f, 0.0f);
 
     LinkedList<Vector3> waypoints = new LinkedList<Vector3>();
 

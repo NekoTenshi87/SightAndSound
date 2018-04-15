@@ -283,6 +283,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\AStarController.cs" />
+    <Compile Include="Assets\Circle.cs" />
     <Compile Include="Assets\GridController.cs" />
     <Compile Include="Assets\MapController.cs" />
     <Compile Include="Assets\MapControllerEditor.cs" />
