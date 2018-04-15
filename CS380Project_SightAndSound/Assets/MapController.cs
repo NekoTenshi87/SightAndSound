@@ -42,8 +42,8 @@ public class MapController : MonoBehaviour
                 CurrentMap = 0;
             }
 
-            MovementController move = GameObject.Find("Player").GetComponent<MovementController>();
-            move.ClearWaypoints();
+            AStarController A_Star = GameObject.Find("Player").GetComponent<AStarController>();
+            A_Star.ClearWaypoints();
             LoadMap(CurrentMap);
         }
     }

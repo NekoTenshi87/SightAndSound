@@ -16,7 +16,9 @@ public class AStarController : MonoBehaviour
 
     float distance = 0.0f;
 
-    enum DIRECTION
+    LinkedList<Vector3> waypoints = new LinkedList<Vector3>();
+
+  enum DIRECTION
     {
         D_NONE = 0,
         D_N = 1,
@@ -212,7 +214,7 @@ public class AStarController : MonoBehaviour
                     break;
                 }
 
-                move.PushWaypointFirst(grid.GetCoordinates(curr_pos.y, curr_pos.x));
+                PushWaypointFirst(grid.GetCoordinates(curr_pos.y, curr_pos.x));
 
                 int p_x = searchSpace[curr_pos.y][curr_pos.x].parent_x;
                 int p_y = searchSpace[curr_pos.y][curr_pos.x].parent_y;
@@ -528,4 +530,126 @@ public class AStarController : MonoBehaviour
 
         return Mathf.Min(row, col) * 1.41f + Mathf.Max(row, col) - Mathf.Min(row, col);
     }
+
+
+  public bool ComputePath(Vector3 goal_pos, float max_dist, bool newRequest)
+  {
+    GridController grid = GameObject.Find("Grid").GetComponent<GridController>();
+
+    if (newRequest)
+    {
+      ValidateSearchSpaceSize();
+
+      Vector2Int goal_grid = grid.GetRowColumn(goal_pos);
+
+      Vector2Int start_grid = grid.GetRowColumn(gameObject.transform.position);
+
+      waypoints.Clear();
+
+      if (goal_grid.x == start_grid.x && goal_grid.y == start_grid.y)
+      {
+        waypoints.AddLast(grid.GetCoordinates(goal_grid.y, goal_grid.x));
+        SetPathDistance(0.0f);
+        return true;
+      }
+
+      if (grid.IsClearPath(start_grid, goal_grid, gameObject.transform.lossyScale.x / 2.0f))
+      {
+        Vector2Int diff = goal_grid - start_grid;
+
+        float dist = Mathf.Sqrt((float)(diff.x * diff.x + diff.y * diff.y));
+
+        if (dist > max_dist)
+        {
+          waypoints.AddLast(gameObject.transform.position);
+          SetPathDistance(0.0f);
+        }
+        else
+        {
+          waypoints.AddLast(goal_pos);
+          SetPathDistance(dist);
+        }
+
+        return true;
+      }
+
+
+      // Clear List
+      Clear();
+
+      //Set Variables
+      SetStart(start_grid);
+      SetGoal(goal_grid);
+
+      NodeData node = new NodeData();
+
+      node.cost = CalcHeuristic(start_grid, goal_grid);
+
+      Push(start_grid, node);
+    }
+
+    while (!Empty())
+    {
+      if (!Update(max_dist))
+      {
+        return true;
+      }
+    }
+
+    Vector2Int pos = grid.GetRowColumn(gameObject.transform.position);
+    waypoints.AddLast(grid.GetCoordinates(pos.y, pos.x));
+    SetPathDistance(0.0f);
+
+    return true;
+  }
+
+  public int GetWaypointCount()
+  {
+    return waypoints.Count;
+  }
+
+  public Vector3 GetWaypointFirstValue()
+  {
+    return waypoints.First.Value;
+  }
+
+  public void PushWaypointLast(Vector3 pos)
+  {
+    waypoints.AddLast(pos);
+  }
+
+  public void PushWaypointFirst(Vector3 pos)
+  {
+    waypoints.AddFirst(pos);
+  }
+
+  public void RemoveFirstWaypoint()
+  {
+    if (waypoints.Count > 0)
+    {
+      waypoints.RemoveFirst();
+    }
+  }
+
+  public void ClearWaypoints()
+  {
+    waypoints.Clear();
+  }
+
+  public LinkedList<Vector3> GetInvertedWaypoints()
+  {
+    LinkedList<Vector3> wp = new LinkedList<Vector3>();
+
+    foreach (Vector3 vect in waypoints)
+    {
+      wp.AddFirst(vect);
+    }
+
+    return wp;
+  }
+
+  public void SetWaypoints(LinkedList<Vector3> wp)
+  {
+    waypoints = wp;
+  }
 }

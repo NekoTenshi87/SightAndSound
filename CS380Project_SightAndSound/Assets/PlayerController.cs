@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour
         vect.Normalize();
 
         MovementController mov = gameObject.GetComponent<MovementController>();
+        AStarController A_Star = gameObject.GetComponent<AStarController>();
 
         if (Input.GetKey(KeyCode.Space))
         {
@@ -71,9 +72,9 @@ public class PlayerController : MonoBehaviour
         {
             case MOVE_TYPE.DIRECTIONAL:
                 {
-                    if (mov.GetWaypointCount() > 0)
+                    if (A_Star.GetWaypointCount() > 0)
                     {
-                        mov.ClearWaypoints();
+                        A_Star.ClearWaypoints();
                     }
 
                     mov.SetDirection(vect);
@@ -82,10 +83,10 @@ public class PlayerController : MonoBehaviour
 
             case MOVE_TYPE.WAYPOINT:
                 {
-                    if (mov.GetWaypointCount() > 0)
+                    if (A_Star.GetWaypointCount() > 0)
                     {
                         // new Dir is (target pos - curr pos), then normalize
-                        Vector3 targetPos = mov.GetWaypointFirstValue();
+                        Vector3 targetPos = A_Star.GetWaypointFirstValue();
                         Vector3 currPos = gameObject.transform.position;
 
                         vect = targetPos - currPos;
@@ -101,7 +102,7 @@ public class PlayerController : MonoBehaviour
                         {
                             gameObject.transform.position = targetPos;
                             mov.SetMoveIdle();
-                            mov.RemoveFirstWaypoint();
+                            A_Star.RemoveFirstWaypoint();
                         }
                     }
                     else
@@ -124,7 +125,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            MovementController move = gameObject.GetComponent<MovementController>();
+            AStarController A_Star = gameObject.GetComponent<AStarController>();
             GridController grid = GameObject.Find("Grid").GetComponentInParent<GridController>();
             Vector3 mouse_pos = Input.mousePosition;
 
@@ -135,7 +136,7 @@ public class PlayerController : MonoBehaviour
                 //move.PushWaypointLast(grid.ScreenToWorld(mouse_pos));
 
                 // Call Compute Path
-                move.ComputePath(grid.ScreenToWorld(mouse_pos), float.MaxValue, true);
+                A_Star.ComputePath(grid.ScreenToWorld(mouse_pos), float.MaxValue, true);
             }
         }
         else
