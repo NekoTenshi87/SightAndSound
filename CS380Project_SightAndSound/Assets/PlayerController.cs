@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    MovementController move;
-    AStarController A_Star;
-    GridController grid;
-
     enum MOVE_TYPE
     {
         DIRECTIONAL,
@@ -51,13 +47,16 @@ public class PlayerController : MonoBehaviour
 
         vect.Normalize();
 
+        MovementController mov = gameObject.GetComponent<MovementController>();
+        AStarController A_Star = gameObject.GetComponent<AStarController>();
+
         if (Input.GetKey(KeyCode.Space))
         {
-            move.SetMoveJog();
+            mov.SetMoveJog();
         }
         else
         {
-            move.SetMoveRun();
+            mov.SetMoveRun();
         }
 
         if (vect != Vector3.zero)
@@ -78,7 +77,7 @@ public class PlayerController : MonoBehaviour
                         A_Star.ClearWaypoints();
                     }
 
-                    move.SetDirection(vect);
+                    mov.SetDirection(vect);
                 }
                 break;
 
@@ -95,34 +94,26 @@ public class PlayerController : MonoBehaviour
                         if (vect != Vector3.zero)
                         {
                             vect.Normalize();
-                            move.SetDirection(vect);
+                            mov.SetDirection(vect);
                         }
 
                         // if player is near target pos, then take node off of waypoint
-                        if (move.GetPosDist(targetPos, currPos) < move.RelativeSpeed())
+                        if (mov.GetPosDist(targetPos, currPos) < mov.RelativeSpeed())
                         {
                             gameObject.transform.position = targetPos;
-                            move.SetMoveIdle();
+                            mov.SetMoveIdle();
                             A_Star.RemoveFirstWaypoint();
                         }
                     }
                     else
                     {
-                        move.SetMoveIdle();
+                        mov.SetMoveIdle();
                     }
                 }
                 break;
             default:
                 break;
         }
-    }
-
-    void Awake()
-    {
-        move = gameObject.GetComponent<MovementController>();
-        A_Star = gameObject.GetComponent<AStarController>();
-        grid = GameObject.Find("Grid").GetComponentInParent<GridController>();
-
     }
 
     // Use this for initialization
@@ -134,6 +125,8 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+            AStarController A_Star = gameObject.GetComponent<AStarController>();
+            GridController grid = GameObject.Find("Grid").GetComponentInParent<GridController>();
             Vector3 mouse_pos = Input.mousePosition;
 
             if (grid.ScreenWithinGrid(mouse_pos))

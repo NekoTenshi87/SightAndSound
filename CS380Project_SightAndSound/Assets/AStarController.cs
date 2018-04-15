@@ -18,10 +18,6 @@ public class AStarController : MonoBehaviour
 
     LinkedList<Vector3> waypoints = new LinkedList<Vector3>();
 
-    GridController grid;
-    MovementController move;
-    MapController map;
-
   enum DIRECTION
     {
         D_NONE = 0,
@@ -80,15 +76,9 @@ public class AStarController : MonoBehaviour
     }
 
     NodeData[][] searchSpace = null;
-  
-    void Awake()
-    {
-        grid = GameObject.Find("Grid").GetComponent<GridController>();
-        move = gameObject.GetComponent<MovementController>();
-        map = grid.GetComponentInChildren<MapController>();
-    }
-	  // Use this for initialization
-	  void Start ()
+
+	// Use this for initialization
+	void Start ()
     {
         InitSearchSpace();
     }
@@ -99,6 +89,8 @@ public class AStarController : MonoBehaviour
 
     public void ValidateSearchSpaceSize()
     {
+        GridController grid = GameObject.Find("Grid").GetComponent<GridController>();
+
         if (search_space_size < grid.NumberOfCells)
         {
             ResizeSearchSpace(grid.NumberOfCells);
@@ -207,6 +199,9 @@ public class AStarController : MonoBehaviour
 
             distance = searchSpace[curr_pos.y][curr_pos.x].given;
 
+            MovementController move = gameObject.GetComponent<MovementController>();
+            GridController grid = GameObject.Find("Grid").GetComponent<GridController>();
+
             while (curr_pos != start)
             {
                 if (curr_pos.x < 0 || curr_pos.y < 0)
@@ -285,6 +280,9 @@ public class AStarController : MonoBehaviour
 
     void pushNeighborNodes(Vector2Int parent, float max_dist)
     {
+        GridController grid = GameObject.Find("Grid").GetComponent<GridController>();
+        MapController map = grid.GetComponentInChildren<MapController>();
+
         BlockedDirs = DIRECTION.D_NONE;
 
         setBlockedDir(parent.y, parent.x, searchSpace[parent.y][parent.x].parent_y, searchSpace[parent.y][parent.x].parent_x);
@@ -536,6 +534,8 @@ public class AStarController : MonoBehaviour
 
   public bool ComputePath(Vector3 goal_pos, float max_dist, bool newRequest)
   {
+    GridController grid = GameObject.Find("Grid").GetComponent<GridController>();
+
     if (newRequest)
     {
       ValidateSearchSpaceSize();
