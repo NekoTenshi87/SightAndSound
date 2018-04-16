@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    MovementController move;
+    AStarController A_Star;
+    GridController grid;
+
     enum MOVE_TYPE
     {
         DIRECTIONAL,
@@ -47,15 +51,13 @@ public class PlayerController : MonoBehaviour
 
         vect.Normalize();
 
-        MovementController mov = gameObject.GetComponent<MovementController>();
-
         if (Input.GetKey(KeyCode.Space))
         {
-            mov.SetMoveJog();
+            move.SetMoveJog();
         }
         else
         {
-            mov.SetMoveRun();
+            move.SetMoveRun();
         }
 
         if (vect != Vector3.zero)
@@ -71,21 +73,21 @@ public class PlayerController : MonoBehaviour
         {
             case MOVE_TYPE.DIRECTIONAL:
                 {
-                    if (mov.GetWaypointCount() > 0)
+                    if (A_Star.GetWaypointCount() > 0)
                     {
-                        mov.ClearWaypoints();
+                        A_Star.ClearWaypoints();
                     }
 
-                    mov.SetDirection(vect);
+                    move.SetDirection(vect);
                 }
                 break;
 
             case MOVE_TYPE.WAYPOINT:
                 {
-                    if (mov.GetWaypointCount() > 0)
+                    if (A_Star.GetWaypointCount() > 0)
                     {
                         // new Dir is (target pos - curr pos), then normalize
-                        Vector3 targetPos = mov.GetWaypointFirstValue();
+                        Vector3 targetPos = A_Star.GetWaypointFirstValue();
                         Vector3 currPos = gameObject.transform.position;
 
                         vect = targetPos - currPos;
@@ -93,26 +95,34 @@ public class PlayerController : MonoBehaviour
                         if (vect != Vector3.zero)
                         {
                             vect.Normalize();
-                            mov.SetDirection(vect);
+                            move.SetDirection(vect);
                         }
 
                         // if player is near target pos, then take node off of waypoint
-                        if (mov.GetPosDist(targetPos, currPos) < mov.RelativeSpeed())
+                        if (move.GetPosDist(targetPos, currPos) < move.RelativeSpeed())
                         {
                             gameObject.transform.position = targetPos;
-                            mov.SetMoveIdle();
-                            mov.RemoveFirstWaypoint();
+                            move.SetMoveIdle();
+                            A_Star.RemoveFirstWaypoint();
                         }
                     }
                     else
                     {
-                        mov.SetMoveIdle();
+                        move.SetMoveIdle();
                     }
                 }
                 break;
             default:
                 break;
         }
+    }
+
+    void Awake()
+    {
+        move = gameObject.GetComponent<MovementController>();
+        A_Star = gameObject.GetComponent<AStarController>();
+        grid = GameObject.Find("Grid").GetComponentInParent<GridController>();
+
     }
 
     // Use this for initialization
@@ -124,8 +134,6 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            MovementController move = gameObject.GetComponent<MovementController>();
-            GridController grid = GameObject.Find("Grid").GetComponentInParent<GridController>();
             Vector3 mouse_pos = Input.mousePosition;
 
             if (grid.ScreenWithinGrid(mouse_pos))
@@ -135,7 +143,7 @@ public class PlayerController : MonoBehaviour
                 //move.PushWaypointLast(grid.ScreenToWorld(mouse_pos));
 
                 // Call Compute Path
-                move.ComputePath(grid.ScreenToWorld(mouse_pos), float.MaxValue, true);
+                A_Star.ComputePath(grid.ScreenToWorld(mouse_pos), float.MaxValue, true);
             }
         }
         else
