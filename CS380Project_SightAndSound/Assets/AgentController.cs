@@ -81,7 +81,7 @@ public class AgentController : MonoBehaviour
         move = gameObject.GetComponent<MovementController>();
     }
 
-    void OnMapChanged()
+    public void OnMapChanged()
     {
         ValidateInputs();
         SetNextState(currentState);
@@ -119,7 +119,6 @@ public class AgentController : MonoBehaviour
         }
  
         ValidateInputs();
-
         SetNextState(startState);
     }
 
@@ -140,8 +139,8 @@ public class AgentController : MonoBehaviour
                     UpdateIdle();
                     break;
             }
+            Debug.DrawLine(gameObject.transform.position, gameObject.transform.position + move.direction * 0.1f, Color.red);
         }
-        Debug.DrawLine(gameObject.transform.position, gameObject.transform.position + move.direction * 0.1f, Color.red);
     }
 
     public void SetNextState(StateType nextState)
@@ -161,7 +160,6 @@ public class AgentController : MonoBehaviour
                 break;
         }
     }
-
 
     // states implementation
     void InitPatrol()
@@ -186,7 +184,9 @@ public class AgentController : MonoBehaviour
             Vector3 currentPos = gameObject.transform.position;
 
             Vector3 movement = nextPos - currentPos;
-            if (movement != Vector3.zero)
+
+            bool isZero = movement == Vector3.zero;
+            if (!isZero)
             {
                 movement.Normalize();
                 move.SetDirection(movement);
@@ -194,7 +194,7 @@ public class AgentController : MonoBehaviour
             }
 
             // if owner is near target pos, then take node off of waypoint
-            if (move.GetPosDist(nextPos, currentPos) < move.RelativeSpeed())
+            if (isZero || (move.GetPosDist(nextPos, currentPos) < move.RelativeSpeed()))
             {
                 gameObject.transform.position = nextPos;
                 move.SetMoveIdle();

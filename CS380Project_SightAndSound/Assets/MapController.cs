@@ -189,12 +189,12 @@ public class MapController : MonoBehaviour
 
         GridController grid = gameObject.GetComponentInParent<GridController>();
 
-        grid.Resize(width);
-
         if (OnMapChanged != null)
         {
             OnMapChanged();
         }
+
+        grid.Resize(width);
 
     }
 

@@ -41,63 +41,37 @@ public class AgentSpawnManager : MonoBehaviour {
         }
 
         GameObject[] Agents = GameObject.FindGameObjectsWithTag("Agent");
-        if (Agents.Length > MapAgentData[currentMap].AgentList.Count)
+        for (int i = 0; i < Agents.Length; ++i)
         {
-            int removeFrom = MapAgentData[currentMap].AgentList.Count;
-            for (int i = removeFrom; i < Agents.Length; ++i)
-            {
-                Object.Destroy(Agents[i]);
-            }
+            Object.DestroyObject(Agents[i]);
         }
-        else if (Agents.Length < MapAgentData[currentMap].AgentList.Count)
-        {
-            GameObject original;
-            if (Agents.Length != 0)
-            {
-                original = Agents[0];
-            }
-            else
-            {
-                original = Resources.Load<GameObject>("/Prefab/Enemy");
-            }
-            if (original == null)
-            {
-                Debug.LogWarning("AgentSpawnManager Fail to instantiate agent!");
-            }
 
-            int many = MapAgentData[currentMap].AgentList.Count - Agents.Length;
+        GameObject origial = GameObject.Find("OriginalAgent");
+        if(origial != null)
+        { 
+            int many = MapAgentData[currentMap].AgentList.Count;
             for (int count = 0; count < many; ++count)
             {
-                GameObject agent = Object.Instantiate(original, MapAgentData[currentMap].AgentList[count].position, Quaternion.identity);
+                GameObject agent = Object.Instantiate(origial, MapAgentData[currentMap].AgentList[count].position, Quaternion.identity);
                 AgentController agentController = agent.GetComponent<AgentController>();
+
+                agentController.Active = true;
                 agentController.patrolSpot = MapAgentData[currentMap].AgentList[count].patrolSpot;
                 agentController.startState = MapAgentData[currentMap].AgentList[count].startState;
                 agentController.sweepAngleDegree = MapAgentData[currentMap].AgentList[count].sweepAngleDegree;
                 agentController.sweepCount = MapAgentData[currentMap].AgentList[count].sweepCount;
                 agentController.timePerSweep = MapAgentData[currentMap].AgentList[count].timePerSweep;
                 agentController.idleTime = MapAgentData[currentMap].AgentList[count].idleTime;
-                Agents[count].transform.position = MapAgentData[currentMap].AgentList[count].position;
-                Agents[count].transform.localScale = new Vector3(MapAgentData[currentMap].AgentList[count].scale, MapAgentData[currentMap].AgentList[count].scale, MapAgentData[currentMap].AgentList[count].scale);
+                agent.transform.position = MapAgentData[currentMap].AgentList[count].position;
+                agent.tag = "Agent";
+                agent.transform.localScale = new Vector3(MapAgentData[currentMap].AgentList[count].scale, MapAgentData[currentMap].AgentList[count].scale, MapAgentData[currentMap].AgentList[count].scale);
             }
         }
 
-        for (int count = 0; count < Agents.Length; ++count)
-        {
-            AgentController agentController = Agents[count].GetComponent<AgentController>();
-            agentController.patrolSpot = MapAgentData[currentMap].AgentList[count].patrolSpot;
-            agentController.startState = MapAgentData[currentMap].AgentList[count].startState;
-            agentController.sweepAngleDegree = MapAgentData[currentMap].AgentList[count].sweepAngleDegree;
-            agentController.sweepCount = MapAgentData[currentMap].AgentList[count].sweepCount;
-            agentController.timePerSweep = MapAgentData[currentMap].AgentList[count].timePerSweep;
-            agentController.idleTime = MapAgentData[currentMap].AgentList[count].idleTime;
-            Agents[count].transform.position = MapAgentData[currentMap].AgentList[count].position;
-            Agents[count].transform.localScale = new Vector3(MapAgentData[currentMap].AgentList[count].scale, MapAgentData[currentMap].AgentList[count].scale, MapAgentData[currentMap].AgentList[count].scale);
-        }
-
-        if (OnCreatedAgents != null)
-        {
-            OnCreatedAgents();
-        }
+        //if (OnCreatedAgents != null)
+        //{
+        //    OnCreatedAgents();
+        //}
     }
 
     void OnEnable()
