@@ -2,6 +2,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
+[RequireComponent(typeof(CircleCollider2D))]
 public class Circle : MonoBehaviour
 {
     public enum FACING
@@ -15,21 +16,30 @@ public class Circle : MonoBehaviour
     [Range(0, 360)]
     public int degree = 360;
 
-    [Range(0.01f, 1.0f)]
-    public float lineWidth = 0.2f;
+    [Range(0.0f, 0.1f)]
+    public float lineWidth = 0.01f;
 
-    [Range(0.1f, 100.0f)]
-    public float radius = 1.0f;
+    [Range(0.0f, 10.0f)]
+    public float radius = 5.0f;
 
-    public bool lineToCenter;
+    private float radius_unit = 0.0f;
 
-    public FACING face;
+    private bool lineToCenter;
+
+    //public FACING face;
+
 
     private LineRenderer lineRenderer;
+    private CircleCollider2D circleCollider2D;
+    private GridController grid;
+    private MovementController movementController;
 
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
+        grid = GameObject.Find("Grid").GetComponent<GridController>();
+        circleCollider2D = GetComponent<CircleCollider2D>();
+        movementController = gameObject.GetComponentInParent<MovementController>();
 
         SetupCircle();
 
@@ -37,28 +47,45 @@ public class Circle : MonoBehaviour
 
     void Update()
     {
+
+        
+
         SetupCircle();
+        SetupCircleCollider();
+
+
 
     }
 
     private void SetupCircle()
     {
+
+        
+
+        radius_unit = radius / grid.NumberOfCells;
+
         lineRenderer.widthMultiplier = lineWidth;
 
         float deltaTheta = (2.0f * Mathf.PI) / vertaxCount;
-        float theta = 0.0f;
+
+        Vector3 v1;
+
+        v1 = movementController.direction;
+
+        float theta = Mathf.Atan2(v1.y, v1.x);
+        theta -= ((float)degree / 2.0f) * Mathf.PI / 180.0f;
 
         int circle = degree * vertaxCount / 360 + 1;
 
-        if (lineToCenter)
+        if (degree != 360)
         {
             lineRenderer.positionCount = circle + 2;
             lineRenderer.SetPosition(0, transform.position);
 
             for (int i = 1; i < lineRenderer.positionCount - 1; i++)
             {
-                Vector3 pos = new Vector3(radius * Mathf.Cos(theta), radius * Mathf.Sin(theta), 0.0f);
-                lineRenderer.SetPosition(i, pos);
+                Vector3 pos = new Vector3(radius_unit * Mathf.Cos(theta), radius_unit * Mathf.Sin(theta), 0.0f);
+                lineRenderer.SetPosition(i, transform.position + pos);
                 theta += deltaTheta;
             }
 
@@ -70,29 +97,43 @@ public class Circle : MonoBehaviour
             lineRenderer.positionCount = circle;
             for (int i = 0; i < lineRenderer.positionCount; i++)
             {
-                Vector3 pos = new Vector3(radius * Mathf.Cos(theta), radius * Mathf.Sin(theta), 0.0f);
-                lineRenderer.SetPosition(i, pos);
+                Vector3 pos = new Vector3(radius_unit * Mathf.Cos(theta), radius_unit * Mathf.Sin(theta), 0.0f);
+                lineRenderer.SetPosition(i, transform.position + pos);
                 theta += deltaTheta;
             }
         }
-        
+
 
 
 
     }
 
+    private void SetupCircleCollider()
+    {
+        circleCollider2D.radius = radius * 1.25f;
+    }
+
 
     private void OnDrawGizmos()
     {
+        grid = GameObject.Find("Grid").GetComponent<GridController>();
+        movementController = gameObject.GetComponentInParent<MovementController>();
+
+
+        radius_unit = radius / grid.NumberOfCells;
+
         float deltatime = (2.0f * Mathf.PI) / vertaxCount;
-        float theta = 0.0f;
+        Vector3 v1;
+        v1 = movementController.direction;
+        float theta = Mathf.Atan2(v1.y, v1.x);
+        theta -= ((float)degree / 2.0f) * Mathf.PI / 180.0f;
 
         Vector3 oldPos = transform.position;
 
-        int circle = degree * vertaxCount / 360 ;
+        int circle = degree * vertaxCount / 360;
         for (int i = 0; i < circle + 1; i++)
         {
-            Vector3 pos = new Vector3(radius * Mathf.Cos(theta), radius * Mathf.Sin(theta), 0.0f);
+            Vector3 pos = new Vector3(radius_unit * Mathf.Cos(theta), radius_unit * Mathf.Sin(theta), 0.0f);
             Gizmos.DrawLine(oldPos, transform.position + pos);
             oldPos = transform.position + pos;
 
@@ -103,5 +144,6 @@ public class Circle : MonoBehaviour
 
     }
 
+    
 
 }
