@@ -3,7 +3,10 @@ using UnityEngine;
 
 public class GridController : MonoBehaviour
 {
+    public delegate void Resized(float size);
+    public static event Resized OnResized;
     public int NumberOfCells = 40;
+
 
     // Use this for initialization
     void Start ()
@@ -41,7 +44,10 @@ public class GridController : MonoBehaviour
 
         player.ResizePlayer(scale.x);
 
-
+        if (OnResized!=null)
+        {
+            OnResized(scale.x);
+        }
     }
 
     public bool ScreenWithinGrid(Vector3 trans)

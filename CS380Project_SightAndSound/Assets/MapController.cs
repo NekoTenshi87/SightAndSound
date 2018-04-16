@@ -6,6 +6,8 @@ using System.IO;
 
 public class MapController : MonoBehaviour
 {
+    public delegate void MapChanged();
+    public static event MapChanged OnMapChanged;
     public enum TILE
     {
         TILE_WALL = -1,
@@ -13,7 +15,7 @@ public class MapController : MonoBehaviour
         TILE_WALL_INVISIBLE
     }
 
-    public int CurrentMap = 0;
+    public static int CurrentMap = 0;
 
     public TileBase WallTile;
 
@@ -183,6 +185,12 @@ public class MapController : MonoBehaviour
         GridController grid = gameObject.GetComponentInParent<GridController>();
 
         grid.Resize(width);
+
+        if (OnMapChanged != null)
+        {
+            OnMapChanged();
+        }
+
     }
 
     public bool IsWall(int row, int col)
