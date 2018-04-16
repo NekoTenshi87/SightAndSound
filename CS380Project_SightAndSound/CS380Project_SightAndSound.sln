@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2015
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CS380Project_SightAndSound", "CS380Project_SightAndSound.csproj", "{68710890-C1F4-94A1-73EA-E084028D868B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CS380Project_SightAndSound.CSharp", "CS380Project_SightAndSound.CSharp.csproj", "{EE809F15-9EAB-4D00-0B36-4EE18C90AA28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{68710890-C1F4-94A1-73EA-E084028D868B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{68710890-C1F4-94A1-73EA-E084028D868B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{68710890-C1F4-94A1-73EA-E084028D868B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{68710890-C1F4-94A1-73EA-E084028D868B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE809F15-9EAB-4D00-0B36-4EE18C90AA28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE809F15-9EAB-4D00-0B36-4EE18C90AA28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE809F15-9EAB-4D00-0B36-4EE18C90AA28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE809F15-9EAB-4D00-0B36-4EE18C90AA28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
