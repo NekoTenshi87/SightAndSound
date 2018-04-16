@@ -21,7 +21,12 @@ public class MapController : MonoBehaviour
 
     public TileBase InvisWallTile;
 
-    int MaxNumberOfMaps = 0;
+    static int MaxNumberOfMaps = 0;
+
+    public static int GetMaxNumberOfMaps()
+    {
+        return MaxNumberOfMaps;
+    }
 
     int[] map_width = null;
     int[][][] map_data = null;

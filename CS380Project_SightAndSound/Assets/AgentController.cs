@@ -2,35 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
 public enum StateType { ePatrol = 0, eSweep = 1, eIdle = 2, eCount = 3 };
-
-[System.Serializable]
-public class AgentConfig
-{
-    public AgentConfig(StateType startState_, 
-        List<Vector3> patrolSpots_, 
-        float sweepAngleDegree_, 
-        int sweepCount_, 
-        float timePerSweep_, 
-        float idleTime_)
-    {
-        startState = startState_;
-        patrolSpot = patrolSpots_;
-        sweepAngleDegree = sweepAngleDegree_;
-        sweepCount = sweepCount_;
-        timePerSweep = timePerSweep_;
-        idleTime = idleTime_;
-    }
-    public StateType startState;
-    //variables for patrol state
-    public List<Vector3> patrolSpot = new List<Vector3>();
-    //variables for idle/sweeping state
-    public float sweepAngleDegree;  // the degree amount of sweeping left and right from view direction  
-    public int sweepCount;   // number of sweeping per idel
-    public float timePerSweep; // time took by one sweeping
-    public float idleTime;
-}
 
 // it is going to work as a state machine
 public class AgentController : MonoBehaviour
@@ -43,7 +15,6 @@ public class AgentController : MonoBehaviour
     private MovementController move;
     private AStarController Astar;
 
-    public AgentConfig agentData;
     //variables for patrol state
     public List<Vector3> patrolSpot = new List<Vector3>();
     private int currentSpot = 0;
@@ -127,13 +98,13 @@ public class AgentController : MonoBehaviour
 
     void OnEnable()
     {
-        MapController.OnMapChanged += OnMapChanged;
+        AgentSpawnManager.OnCreatedAgents += OnMapChanged;
         GridController.OnResized += Resize;
     }
 
     void OnDisable()
     {
-        MapController.OnMapChanged -= OnMapChanged;
+        AgentSpawnManager.OnCreatedAgents -= OnMapChanged;
         GridController.OnResized -= Resize;
     }
 
