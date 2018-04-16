@@ -200,6 +200,7 @@ GameObject:
   - component: {fileID: 440406571}
   - component: {fileID: 440406570}
   - component: {fileID: 440406569}
+  - component: {fileID: 440406568}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -207,6 +208,24 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &440406568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 440406567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f576cbef5c7559a4b8aa6ab3762931ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Active: 1
+  startState: 0
+  patrolSpot: []
+  sweepAngleDegree: 30
+  sweepCount: 2
+  timePerSweep: 2
+  idleTime: 0.2
 --- !u!114 &440406569
 MonoBehaviour:
   m_ObjectHideFlags: 0

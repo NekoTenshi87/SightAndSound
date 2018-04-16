@@ -45,6 +45,8 @@ public class MapController : MonoBehaviour
             AStarController A_Star = GameObject.Find("Player").GetComponent<AStarController>();
             A_Star.ClearWaypoints();
             LoadMap(CurrentMap);
+
+            
         }
     }
 
