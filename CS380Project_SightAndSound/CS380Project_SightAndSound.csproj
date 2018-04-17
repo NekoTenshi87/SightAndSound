@@ -282,20 +282,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\AgentController.cs" />
-    <Compile Include="Assets\AgentSpawnManager.cs" />
-    <Compile Include="Assets\AStarController.cs" />
-    <Compile Include="Assets\Circle.cs" />
-    <Compile Include="Assets\GridController.cs" />
-    <Compile Include="Assets\MapController.cs" />
-    <Compile Include="Assets\MapControllerEditor.cs" />
-    <Compile Include="Assets\MovementController.cs" />
-    <Compile Include="Assets\PlayerController.cs" />
-    <Compile Include="Assets\RippleController.cs" />
-    <Compile Include="Assets\SightEmitterController.cs" />
-    <Compile Include="Assets\SightListener.cs" />
-    <Compile Include="Assets\SoundEmitterController.cs" />
-    <Compile Include="Assets\SoundListener.cs" />
+    <Compile Include="Assets\Scripts\AgentController.cs" />
+    <Compile Include="Assets\Scripts\AgentSpawnManager.cs" />
+    <Compile Include="Assets\Scripts\AStarController.cs" />
+    <Compile Include="Assets\Scripts\Circle.cs" />
+    <Compile Include="Assets\Scripts\GridController.cs" />
+    <Compile Include="Assets\Scripts\MapController.cs" />
+    <Compile Include="Assets\Scripts\MovementController.cs" />
+    <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\RippleController.cs" />
+    <Compile Include="Assets\Scripts\SightEmitterController.cs" />
+    <Compile Include="Assets\Scripts\SightListener.cs" />
+    <Compile Include="Assets\Scripts\SoundEmitterController.cs" />
+    <Compile Include="Assets\Scripts\SoundListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Maps\Map1.txt" />
