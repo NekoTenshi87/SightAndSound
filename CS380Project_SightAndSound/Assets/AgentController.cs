@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum StateType { ePatrol = 0, eSweep = 1, eIdle = 2, eCount = 3 };
+public enum StateType { ePatrol = 0, eSweep = 1, eIdle = 2, eCount = 3, eMove = 4 };
 
 // it is going to work as a state machine
 public class AgentController : MonoBehaviour
@@ -14,6 +14,10 @@ public class AgentController : MonoBehaviour
 
     private MovementController move;
     private AStarController Astar;
+    private SoundListener sound;
+
+    private GridController grid;
+    private AgentSpawnManager spawn;
 
     //variables for patrol state
     public List<Vector3> patrolSpot = new List<Vector3>();
@@ -40,7 +44,7 @@ public class AgentController : MonoBehaviour
         for (int current = 0; current < patrolSpot.Count; ++current)
         {
             Vector2Int coord = grid.GetRowColumn(patrolSpot[current]);
-            if (map.IsWall(coord.x, coord.y))
+            if (map.IsWall(coord.y, coord.x))
             {
                 invalidSpots[invalidCount] = current;
                 ++invalidCount;
@@ -79,6 +83,9 @@ public class AgentController : MonoBehaviour
     {
         Astar = gameObject.GetComponent<AStarController>();
         move = gameObject.GetComponent<MovementController>();
+        sound = gameObject.GetComponent<SoundListener>();
+        grid = GameObject.Find("Grid").GetComponent<GridController>();
+        spawn = GameObject.Find("AgentSpawnHelper").GetComponent<AgentSpawnManager>();
     }
 
     public void OnMapChanged()
@@ -98,14 +105,14 @@ public class AgentController : MonoBehaviour
 
     void OnEnable()
     {
-        AgentSpawnManager.OnCreatedAgents += OnMapChanged;
-        GridController.OnResized += Resize;
+        //spawn.OnCreatedAgents += OnMapChanged;
+        grid.OnResized += Resize;
     }
 
     void OnDisable()
     {
-        AgentSpawnManager.OnCreatedAgents -= OnMapChanged;
-        GridController.OnResized -= Resize;
+        //spawn.OnCreatedAgents -= OnMapChanged;
+        grid.OnResized -= Resize;
     }
 
     // Use this for initialization
@@ -113,9 +120,9 @@ public class AgentController : MonoBehaviour
     {
         if(patrolSpot.Count <= 0)
         {
-            patrolSpot.Add( new Vector3(Random.Range(0.1f, 0.9f), Random.Range(0.1f, 0.9f), 0.0f));
-            patrolSpot.Add( new Vector3(Random.Range(0.1f, 0.9f), Random.Range(0.1f, 0.9f), 0.0f));
-            patrolSpot.Add( new Vector3(Random.Range(0.1f, 0.9f), Random.Range(0.1f, 0.9f), 0.0f));
+            patrolSpot.Add( new Vector3(Random.Range(0.1f, 0.9f), Random.Range(0.1f, 0.9f), gameObject.transform.localPosition.z));
+            patrolSpot.Add( new Vector3(Random.Range(0.1f, 0.9f), Random.Range(0.1f, 0.9f), gameObject.transform.localPosition.z));
+            patrolSpot.Add( new Vector3(Random.Range(0.1f, 0.9f), Random.Range(0.1f, 0.9f), gameObject.transform.localPosition.z));
         }
  
         ValidateInputs();
@@ -138,6 +145,9 @@ public class AgentController : MonoBehaviour
                 case StateType.eIdle:
                     UpdateIdle();
                     break;
+                case StateType.eMove:
+                    UpdateMove();
+                    break;
             }
             Debug.DrawLine(gameObject.transform.position, gameObject.transform.position + move.direction * 0.1f, Color.red);
         }
@@ -158,6 +168,9 @@ public class AgentController : MonoBehaviour
             case StateType.eIdle:
                 InitIdle();
                 break;
+            case StateType.eMove:
+                InitMove();
+                break;
         }
     }
 
@@ -172,39 +185,21 @@ public class AgentController : MonoBehaviour
             }
 
             Astar.ComputePath(patrolSpot[currentSpot], float.MaxValue, true);
-            ++currentSpot;
-        }
-    }
-    void UpdatePatrol()
-    {
-        // walking to the current target spot
-        if (Astar.GetWaypointCount() > 0)
-        {
-            Vector3 nextPos = Astar.GetWaypointFirstValue();
-            Vector3 currentPos = gameObject.transform.position;
 
-            Vector3 movement = nextPos - currentPos;
-
-            bool isZero = movement == Vector3.zero;
-            if (!isZero)
+            if (Astar.GetWaypointCount() > 0)
             {
-                movement.Normalize();
-                move.SetDirection(movement);
-                move.SetMoveJog();
-            }
-
-            // if owner is near target pos, then take node off of waypoint
-            if (isZero || (move.GetPosDist(nextPos, currentPos) < move.RelativeSpeed()))
-            {
-                gameObject.transform.position = nextPos;
-                move.SetMoveIdle();
                 Astar.RemoveFirstWaypoint();
             }
+
+            ++currentSpot;
         }
-        else
-        {
-            SetNextState(StateType.eSweep);
-        }
+
+        move.SetMoveJog();
+    }
+
+    void UpdatePatrol()
+    {
+        MoveAgent();
     }
 
     void InitSweep()
@@ -214,7 +209,9 @@ public class AgentController : MonoBehaviour
         viewAngle = Vector3.Angle(move.direction, new Vector3(1, 0, 0));
         if (move.direction.y < 0)
             viewAngle = Mathf.PI * 2 - viewAngle;
+        move.SetMoveIdle();
     }
+
     void UpdateSweep()
     {
         if (timer < timePerSweep)
@@ -243,7 +240,7 @@ public class AgentController : MonoBehaviour
     void InitIdle()
     {
         timer = 0;
-        move.SetMoveIdle();
+        move.SetMoveJog();
     }
 
     void UpdateIdle()
@@ -257,5 +254,51 @@ public class AgentController : MonoBehaviour
                 SetNextState(StateType.ePatrol);
             }
         }
+    }
+
+    void InitMove()
+    {
+        move.SetMoveRun();
+    }
+    
+    void UpdateMove()
+    {
+        MoveAgent();
+    }
+
+    void MoveAgent()
+    {
+        // walking to the current target spot
+        if (Astar.GetWaypointCount() > 0)
+        {
+            Vector3 nextPos = Astar.GetWaypointFirstValue();
+            Vector3 currentPos = gameObject.transform.position;
+
+            Vector3 movement = nextPos - currentPos;
+
+            //bool isZero = movement == Vector3.zero;
+
+            if (movement != Vector3.zero)
+            {
+                movement.Normalize();
+                move.SetDirection(movement);
+            }
+
+            // if owner is near target pos, then take node off of waypoint
+            if (move.GetPosDist(nextPos, currentPos) < move.RelativeSpeed())
+            {
+                gameObject.transform.position = nextPos;
+                Astar.RemoveFirstWaypoint();
+            }
+        }
+        else
+        {
+            SetNextState(StateType.eSweep);
+        }
+    }
+
+    public StateType GetState()
+    {
+        return currentState;
     }
 }

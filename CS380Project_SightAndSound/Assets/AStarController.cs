@@ -19,7 +19,7 @@ public class AStarController : MonoBehaviour
     LinkedList<Vector3> waypoints = new LinkedList<Vector3>();
 
     GridController grid;
-    MovementController move;
+    //MovementController move;
     MapController map;
 
   enum DIRECTION
@@ -84,7 +84,7 @@ public class AStarController : MonoBehaviour
     void Awake()
     {
         grid = GameObject.Find("Grid").GetComponent<GridController>();
-        move = gameObject.GetComponent<MovementController>();
+        //move = gameObject.GetComponent<MovementController>();
         map = grid.GetComponentInChildren<MapController>();
     }
 	  // Use this for initialization
@@ -228,7 +228,7 @@ public class AStarController : MonoBehaviour
                 curr_pos.y = p_y;
             }
 
-            // move.PushWaypointFirst(grid.GetCoordinates(start.y, start.x);
+            PushWaypointFirst(grid.GetCoordinates(start.y, start.x));
 
             return false;
         }
@@ -561,12 +561,13 @@ public class AStarController : MonoBehaviour
 
         if (dist > max_dist)
         {
-          waypoints.AddLast(gameObject.transform.position);
-          SetPathDistance(0.0f);
+          waypoints.AddFirst(gameObject.transform.position);
+          SetPathDistance(float.MaxValue);
         }
         else
         {
-          waypoints.AddLast(goal_pos);
+          waypoints.AddFirst(goal_pos);
+          waypoints.AddFirst(gameObject.transform.position);
           SetPathDistance(dist);
         }
 
@@ -597,8 +598,8 @@ public class AStarController : MonoBehaviour
     }
 
     Vector2Int pos = grid.GetRowColumn(gameObject.transform.position);
-    waypoints.AddLast(grid.GetCoordinates(pos.y, pos.x));
-    SetPathDistance(0.0f);
+    waypoints.AddFirst(grid.GetCoordinates(pos.y, pos.x));
+    SetPathDistance(float.MaxValue);
 
     return true;
   }
@@ -636,6 +637,11 @@ public class AStarController : MonoBehaviour
     waypoints.Clear();
   }
 
+    public LinkedList<Vector3> GetWaypoints()
+    {
+        return waypoints;
+    }
+
   public LinkedList<Vector3> GetInvertedWaypoints()
   {
     LinkedList<Vector3> wp = new LinkedList<Vector3>();
@@ -650,6 +656,30 @@ public class AStarController : MonoBehaviour
 
   public void SetWaypoints(LinkedList<Vector3> wp)
   {
-    waypoints = wp;
+        ClearWaypoints();
+
+        foreach (Vector3 vect in wp)
+        {
+            waypoints.AddLast(vect);
+        }
   }
+
+    public void DrawPath(LineRenderer rend)
+    {
+        int count = waypoints.Count;
+
+        if (count > 0)
+        {
+            rend.positionCount = count + 1;
+
+            int index = 0;
+
+            rend.SetPosition(index++, gameObject.transform.position);
+
+            foreach (Vector3 pos in waypoints)
+            {
+                rend.SetPosition(index++, pos);
+            }
+        }
+    }
 }

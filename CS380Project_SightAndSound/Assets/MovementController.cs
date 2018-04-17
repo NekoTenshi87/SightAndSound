@@ -27,7 +27,7 @@ public class MovementController : MonoBehaviour
     }
 	
 	// Update is called once per frame
-	  void Update ()
+	void Update ()
     {
         if (speed > 0.0f)
         {

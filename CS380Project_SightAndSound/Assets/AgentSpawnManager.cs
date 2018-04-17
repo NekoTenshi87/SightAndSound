@@ -5,8 +5,10 @@ using UnityEngine;
 
 public class AgentSpawnManager : MonoBehaviour {
 
-    public delegate void CreatedAgents();
-    public static event CreatedAgents OnCreatedAgents;
+    //public delegate void CreatedAgents();
+    //public event CreatedAgents OnCreatedAgents;
+
+    private MapController map;
 
     [System.Serializable]
     public class AgentSpawnData
@@ -29,9 +31,14 @@ public class AgentSpawnManager : MonoBehaviour {
 
     public List<AgentSpawnDataList> MapAgentData = new List<AgentSpawnDataList>();
 
+    private void Awake()
+    {
+        map = GameObject.Find("Grid").GetComponentInChildren<MapController>();
+    }
+
     void OnMapChanged()
     {
-        int currentMap = MapController.CurrentMap;
+        int currentMap = map.CurrentMap;
         if (currentMap < 0 || 
             MapAgentData == null || 
             MapAgentData[currentMap] == null || 
@@ -76,12 +83,12 @@ public class AgentSpawnManager : MonoBehaviour {
 
     void OnEnable()
     {
-        MapController.OnMapChanged += OnMapChanged;
+        map.OnMapChanged += OnMapChanged;
     }
 
     void OnDisable()
     {
-        MapController.OnMapChanged -= OnMapChanged;
+        map.OnMapChanged -= OnMapChanged;
     }
 
     // Use this for initialization

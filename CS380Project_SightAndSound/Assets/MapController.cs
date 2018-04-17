@@ -7,7 +7,8 @@ using System.IO;
 public class MapController : MonoBehaviour
 {
     public delegate void MapChanged();
-    public static event MapChanged OnMapChanged;
+    public event MapChanged OnMapChanged;
+
     public enum TILE
     {
         TILE_WALL = -1,
@@ -15,7 +16,7 @@ public class MapController : MonoBehaviour
         TILE_WALL_INVISIBLE
     }
 
-    public static int CurrentMap = 0;
+    public int CurrentMap = 0;
 
     public TileBase WallTile;
 

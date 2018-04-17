@@ -4,9 +4,9 @@ using UnityEngine;
 public class GridController : MonoBehaviour
 {
     public delegate void Resized(float size);
-    public static event Resized OnResized;
-    public int NumberOfCells = 40;
+    public event Resized OnResized;
 
+    public int NumberOfCells = 40;
 
     // Use this for initialization
     void Start ()
@@ -76,6 +76,7 @@ public class GridController : MonoBehaviour
         return trans;
     }
 
+    /*
     public Vector3 ClampWorldToGridSq(Vector3 trans)
     {
 
@@ -90,6 +91,7 @@ public class GridController : MonoBehaviour
 
         return new Vector3Int(Mathf.FloorToInt(trans.x), Mathf.FloorToInt(trans.y), Mathf.FloorToInt(trans.z));
     }
+    */
 
     public Vector3 GetCoordinates(int row, int col)
     {

@@ -19,12 +19,19 @@ public class Circle : MonoBehaviour
     [Range(0.0f, 0.1f)]
     public float lineWidth = 0.01f;
 
-    [Range(0.0f, 10.0f)]
-    public float radius = 5.0f;
+    [Range(0.0f, 20.0f)]
+    public float idle_radius = 1.0f;
+
+    [Range(0.0f, 20.0f)]
+    public float walk_radius = 1.0f;
+    [Range(0.0f, 20.0f)]
+    public float run_radius = 5.0f;
+
+    public float radius = 0.0f;
 
     private float radius_unit = 0.0f;
 
-    private bool lineToCenter;
+    //private bool lineToCenter;
 
     //public FACING face;
 
@@ -41,20 +48,35 @@ public class Circle : MonoBehaviour
         circleCollider2D = GetComponent<CircleCollider2D>();
         movementController = gameObject.GetComponentInParent<MovementController>();
 
+        circleCollider2D.isTrigger = true;
+
         SetupCircle();
 
     }
 
+    void Start()
+    {
+        lineRenderer.material = new Material(Shader.Find("Particles/Multiply"));
+    }
+
     void Update()
     {
+        if (movementController.MoveType == MovementController.MOVEMENT_TYPE.M_IDLE)
+        {
+            radius = idle_radius;
+        }
+        else if (movementController.MoveType == MovementController.MOVEMENT_TYPE.M_JOG)
+        {
+            radius = walk_radius;
+        }
+        else if (movementController.MoveType == MovementController.MOVEMENT_TYPE.M_RUN)
+        {
+            radius = run_radius;
+        }
 
-        
 
         SetupCircle();
         SetupCircleCollider();
-
-
-
     }
 
     private void SetupCircle()

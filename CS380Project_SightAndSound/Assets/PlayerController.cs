@@ -102,7 +102,7 @@ public class PlayerController : MonoBehaviour
                         if (move.GetPosDist(targetPos, currPos) < move.RelativeSpeed())
                         {
                             gameObject.transform.position = targetPos;
-                            move.SetMoveIdle();
+                            //move.SetMoveIdle();
                             A_Star.RemoveFirstWaypoint();
                         }
                     }
@@ -135,6 +135,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             Vector3 mouse_pos = Input.mousePosition;
+            mouse_pos.z = gameObject.transform.localPosition.z;
 
             if (grid.ScreenWithinGrid(mouse_pos))
             {
@@ -144,6 +145,11 @@ public class PlayerController : MonoBehaviour
 
                 // Call Compute Path
                 A_Star.ComputePath(grid.ScreenToWorld(mouse_pos), float.MaxValue, true);
+
+                if (A_Star.GetWaypointCount() > 0)
+                {
+                    A_Star.RemoveFirstWaypoint();
+                }
             }
         }
         else
