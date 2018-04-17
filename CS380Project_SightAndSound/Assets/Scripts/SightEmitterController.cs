@@ -33,21 +33,24 @@ public class SightEmitterController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Target)
+        if (!movementController.isPaused())
         {
-            Vector2Int pos_grid = grid.GetRowColumn(gameObject.transform.position);
-            Vector2Int tpos_grid = grid.GetRowColumn(Target.transform.position);
-
-            if (grid.IsClearPath(pos_grid, tpos_grid, Target.transform.lossyScale.x / 2.0f))
+            if (Target)
             {
-                Vector3 pos = Target.transform.position;
-                pos.z = 0.0f;
+                Vector2Int pos_grid = grid.GetRowColumn(gameObject.transform.position);
+                Vector2Int tpos_grid = grid.GetRowColumn(Target.transform.position);
 
-                Astar.ComputePath(pos, float.MaxValue, true);
-
-                if (lis)
+                if (grid.IsClearPath(pos_grid, tpos_grid, Target.transform.lossyScale.x / 2.0f))
                 {
-                    lis.UpdateWaypoints(Astar.GetWaypoints());
+                    Vector3 pos = Target.transform.position;
+                    pos.z = 0.0f;
+
+                    Astar.ComputePath(pos, float.MaxValue, true);
+
+                    if (lis)
+                    {
+                        lis.UpdateWaypoints(Astar.GetWaypoints());
+                    }
                 }
             }
         }

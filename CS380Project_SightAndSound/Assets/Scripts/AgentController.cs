@@ -130,24 +130,39 @@ public class AgentController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Active)
-        { 
-            switch (currentState)
+        if (Input.GetAxis("Pause") == 0.0f)
+        {
+            if (move.isPaused())
             {
-                case StateType.ePatrol:
-                    UpdatePatrol();
-                    break;
-                case StateType.eSweep:
-                    UpdateSweep();
-                    break;
-                case StateType.eIdle:
-                    UpdateIdle();
-                    break;
-                case StateType.eMove:
-                    UpdateMove();
-                    break;
+                move.Resume();
             }
-            Debug.DrawLine(gameObject.transform.position, gameObject.transform.position + move.direction * 0.1f, Color.red);
+
+            if (Active)
+            { 
+                switch (currentState)
+                {
+                    case StateType.ePatrol:
+                        UpdatePatrol();
+                        break;
+                    case StateType.eSweep:
+                        UpdateSweep();
+                        break;
+                    case StateType.eIdle:
+                        UpdateIdle();
+                        break;
+                    case StateType.eMove:
+                        UpdateMove();
+                        break;
+                }
+                Debug.DrawLine(gameObject.transform.position, gameObject.transform.position + move.direction * 0.1f, Color.red);
+            }
+        }
+        else
+        {
+            if (!move.isPaused())
+            {
+                move.Pause();
+            }
         }
     }
 

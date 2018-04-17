@@ -14,7 +14,10 @@ public class MovementController : MonoBehaviour
     public float RunSpeed = 8.0f;
     public float JogSpeed = 4.0f;
 
-    float speed;
+    public float speed;
+    float prev_speed;
+
+    bool paused = false;
 
     public Vector3 direction = new Vector3(0.0f, 1.0f, 0.0f);
 
@@ -87,6 +90,24 @@ public class MovementController : MonoBehaviour
         {
             speed = 0.0f;
         }
+    }
+
+    public void Pause()
+    {
+        prev_speed = speed;
+        speed = 0.0f;
+        paused = true;
+    }
+
+    public void Resume()
+    {
+        speed = prev_speed;
+        paused = false;
+    }
+
+    public bool isPaused()
+    {
+        return paused;
     }
 
     public float GetPosDist(Vector3 a, Vector3 b)

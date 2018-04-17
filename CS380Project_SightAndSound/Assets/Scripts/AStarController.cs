@@ -542,7 +542,25 @@ public class AStarController : MonoBehaviour
 
       Vector2Int goal_grid = grid.GetRowColumn(goal_pos);
 
+        if (map.IsWall(goal_grid.y, goal_grid.x))
+        {
+            Vector2Int p = grid.GetRowColumn(gameObject.transform.position);
+            waypoints.AddFirst(grid.GetCoordinates(p.y, p.x));
+            SetPathDistance(float.MaxValue);
+
+            return true;
+        }
+
       Vector2Int start_grid = grid.GetRowColumn(gameObject.transform.position);
+
+        if (map.IsWall(start_grid.y, start_grid.x))
+        {
+            Vector2Int p = grid.GetRowColumn(gameObject.transform.position);
+            waypoints.AddFirst(grid.GetCoordinates(p.y, p.x));
+            SetPathDistance(float.MaxValue);
+
+            return true;
+        }
 
       waypoints.Clear();
 

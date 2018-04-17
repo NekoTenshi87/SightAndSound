@@ -34,35 +34,38 @@ public class PlayerController : MonoBehaviour
             Application.Quit();
         }
 
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetAxis("Vertical") > 0.0f)
         {
             vect.y += 1.0f;
         }
 
-        if (Input.GetKey(KeyCode.RightArrow))
+        float check = Input.GetAxis("Horizontal");
+
+        if (Input.GetAxis("Horizontal") > 0.0f)
         {
             vect.x += 1.0f;
         }
 
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetAxis("Vertical") < 0.0f)
         {
             vect.y -= 1.0f;
         }
 
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetAxis("Horizontal") < 0.0f)
         {
             vect.x -= 1.0f;
         }
 
         vect.Normalize();
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetAxis("Slowdown") == 0.0f)
         {
-            move.SetMoveJog();
+            move.SetMoveRun();
+            //move.SetMoveJog();
         }
         else
         {
-            move.SetMoveRun();
+            move.SetMoveJog();
         }
 
         if (vect != Vector3.zero)
@@ -136,7 +139,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKey(KeyCode.Mouse0))
         {
             Vector3 mouse_pos = Input.mousePosition;
             mouse_pos.z = gameObject.transform.localPosition.z;
@@ -158,7 +161,22 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-          MovePlayer();
+            if (Input.GetAxis("Pause") == 0.0f)
+            {
+                if (move.isPaused())
+                {
+                    move.Resume();
+                }
+
+                MovePlayer();
+            }
+            else
+            {
+                if (!move.isPaused())
+                {
+                    move.Pause();
+                }
+            }
         }
 	}
 }

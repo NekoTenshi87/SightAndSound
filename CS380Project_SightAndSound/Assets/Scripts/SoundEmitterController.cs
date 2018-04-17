@@ -10,6 +10,7 @@ public class SoundEmitterController : MonoBehaviour
 
     private Circle circle;
     private AStarController Astar;
+    private MovementController move;
 
     private List<GameObject> Targets = new List<GameObject>();
 
@@ -17,6 +18,7 @@ public class SoundEmitterController : MonoBehaviour
     {
         circle = gameObject.GetComponent<Circle>();
         Astar = gameObject.GetComponent<AStarController>();
+        move = gameObject.GetComponentInParent<MovementController>();
     }
 
     // Use this for initialization
@@ -28,21 +30,24 @@ public class SoundEmitterController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach (GameObject target in Targets)
+        if (!move.isPaused())
         {
-            SoundListener lis = target.GetComponentInChildren<SoundListener>();
-
-            if (lis)
+            foreach (GameObject target in Targets)
             {
-                Vector3 pos = target.transform.position;
-                pos.z = 0.0f;
+                SoundListener lis = target.GetComponentInChildren<SoundListener>();
 
-                Astar.ComputePath(pos, circle.radius, true);
-                float dis = Astar.GetPathDistance();
-
-                if (dis <= circle.radius)
+                if (lis)
                 {
-                    lis.UpdateWaypoints(Astar.GetInvertedWaypoints());
+                    Vector3 pos = target.transform.position;
+                    pos.z = 0.0f;
+
+                    Astar.ComputePath(pos, circle.radius, true);
+                    float dis = Astar.GetPathDistance();
+
+                    if (dis <= circle.radius)
+                    {
+                        lis.UpdateWaypoints(Astar.GetInvertedWaypoints());
+                    }
                 }
             }
         }

@@ -42,7 +42,7 @@ public class MapController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.LeftAlt) || Input.GetKeyDown(KeyCode.RightAlt))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
             ++CurrentMap;
 
